@@ -68,7 +68,7 @@ chrome.runtime.onMessage.addListener( //FROM CONTENT SCRIPT
 chrome.storage.onChanged.addListener(
     async function () {
         console.log("storage changed")
-        chrome.storage.local.get("pendingcommandforbackground", async function (result) {
+        chrome.storage.local.get(["pendingcommandforbackground", "acc"], async function (result) {
             console.log(result)
             if (result.pendingcommandforbackground == "start-bot") {
                 try {
@@ -85,6 +85,7 @@ chrome.storage.onChanged.addListener(
                     changeStatus("Running")
                     appendToLog("Started.")
                     chrome.storage.local.set({pendingcommandforbackground: ""}, () => {})
+                    chrome.runtime.sendMessage({ setacc: result.acc }, function (response) {})
                 } catch (error) {
                     changeStatus("Not Running")
                     appendToLog(error)

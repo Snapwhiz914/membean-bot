@@ -60,7 +60,7 @@ document.getElementById("startbot").onclick = async function () {
     console.log("start bot after tabs")
     if (tabs[0].url.startsWith("https://membean.com/training_sessions")) {
         botTab = tabs[0]
-        chrome.storage.local.set({ pendingcommandforbackground: "start-bot" }, function () {
+        chrome.storage.local.set({ pendingcommandforbackground: "start-bot", acc: document.getElementById("accuracy").value }, function () {
             console.log("Starting bot from bot")
             appendToLog("Starting bot...")
         })

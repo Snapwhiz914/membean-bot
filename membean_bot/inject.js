@@ -1,13 +1,17 @@
 //Start
 
 var timeoutId = 0
-
+var acc = 0
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
-  }
+}
+
+function chance(percent) {
+    return (getRandomInt(0, percent) <= percent)
+}
 
 function sendMessageToExtension(obj) {
     try {
@@ -37,7 +41,17 @@ function interval() {
                 if (ikt) {
                     ikt.click()
                 } else {
-                    form.click()
+                    if (chance(acc)) {
+                        if (form.getAttribute("name") == "Pass") form.click()
+                        return
+                    } else {
+                        for (var form of document.getElementsByTagName("form")) {
+                            if (form.getAttribute("name") == "Fail") {
+                                form.click()
+                                return
+                            }
+                        }
+                    }
                 }
                 if (form.getAttribute("name") == "Click me to stop") {
                     //Bot is done
@@ -70,8 +84,13 @@ chrome.runtime.onMessage.addListener(
                 clearTimeout(timeoutId)
                 sendResponse({status: "stop-success"})
             } catch(error) {
+                console.log("Bot stop error: ")
+                console.log(error)
                 sendResponse({status: "stop-failure", error: error})
             }
+        }
+        if (request.setacc) {
+            acc = request.setacc
         }
     }
 );
